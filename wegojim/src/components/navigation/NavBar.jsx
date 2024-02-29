@@ -15,14 +15,14 @@ import {
     DropdownMenuTrigger,
   } from "../ui/dropdown-menu"
 
-const NavBar = () => {
+const NavBar = ({user}) => {
   return (
     <div className="border-b">
           <div className="flex h-16 items-center px-4">
             <h1 className="ml-5 mb-7 font-extrabold text-5xl text-white">We Go Jim!</h1>
-            <div className="ml-auto flex items-center space-x-4">
+            {user?(<div className="ml-auto flex items-center space-x-4">
               <UserNav />
-            </div>
+            </div>):(<></>)}
           </div>
         </div>
   )

@@ -9,13 +9,13 @@ import Legs from "./pages/Legs";
 import NavBar from "./components/navigation/NavBar";
 
 function App() {
-  const user = true;
+  const user = false;
 
   return (
     <BrowserRouter>
       <div className="mt-5">
         {/* NavBar */}
-        <NavBar />
+        <NavBar user={user}/>
 
         {/* Routed Pages */}
         <div className="mx-auto p-10">
