@@ -35,6 +35,7 @@ function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center">
+      {/* workout cards */}
       <div className="flex flex-wrap justify-center w-full">
         {workouts.map((workout, index) => (
           <div className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-2" key={index}>
@@ -42,6 +43,9 @@ function Home() {
           </div>
         ))}
       </div>
+      {/* ... */}
+
+      {/* graph and add workout */}
       <div className="flex flex-col md:flex-row w-full mt-4">
         <div className="w-full md:w-1/2 p-2">
           <div className="bg-gray-800 p-4 rounded-lg h-full">
@@ -51,34 +55,44 @@ function Home() {
         </div>
         <div className="w-full md:w-1/2 p-2">
           <div className="bg-green-600 p-4 rounded-lg h-full">
-            <div className="flex flex-row">
-              <div>
+            {/* Render previous workouts if available */}
+            {workouts.length > 0 ? (
+              <>
+                <div className="flex flex-row justify-between items-center mb-4">
+                  <h2 className="text-white text-lg font-semibold">
+                    Add Workout
+                  </h2>
+                  {/* Add Workout button */}
+                  <div>
+                    <Button className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold">
+                      Add Workout
+                    </Button>
+                  </div>
+                </div>
                 <h2 className="text-white text-lg font-semibold mb-2">
-                  Add Workout
+                  Previous Workouts
                 </h2>
-              </div>
-              {/* Add Workout button */}
-              <div className="ml-auto">
-                <Button className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold mb-4">
+                <div>
+                  {workouts.map((workout, index) => (
+                    <div key={index}>
+                      {/* Display each previous workout */}
+                      <p>{workout.day}</p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              // Render Add Workout button in the middle if no previous workouts
+              <div className="flex justify-center">
+                <Button className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold">
                   Add Workout
                 </Button>
               </div>
-            </div>
-            <h2 className="text-white text-lg font-semibold mb-2">
-              Previous Workouts
-            </h2>
-            {/* Render previous workouts */}
-            <div>
-              {workouts.map((workout, index) => (
-                <div key={index}>
-                  {/* Display each previous workout */}
-                  <p>{workout.day}</p>
-                </div>
-              ))}
-            </div>
+            )}
           </div>
         </div>
       </div>
+      {/* ... */}
     </div>
   );
 }
