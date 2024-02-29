@@ -21,16 +21,11 @@ const Push = () => {
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
 
-  //    const handleSave = () => {
-  //     // Here you can handle saving the sets and reps data
-  //     // console.log("Exercise:", exercise);
-  //     // console.log("Sets:", sets);
-  //     // console.log("Reps:", reps);
-
-  //     // Close the modal
-  //     onClose();
-  //   };
-  //   const onClose = ()=>{}
+  const onSubmit = ()=>{
+    setSets("");
+    setReps("");
+    setWeight("");
+  }
 
   return (
     <div className="flex flex-col items-center">
@@ -102,7 +97,7 @@ const Push = () => {
               </div>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button type='submit'>Save</Button>
+                  <Button type='submit' onClick={onSubmit}>Save</Button>
                   {/* <Button variant="outline">
                     Cancel
                   </Button> */}
