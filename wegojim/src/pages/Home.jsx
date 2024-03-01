@@ -1,8 +1,37 @@
 import { Button } from "@/components/ui/button";
 import WorkOutCard from "@/components/workouts/WorkOutCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 function Home() {
+  const [workoutName, setWorkoutName] = useState("");
+  const [date, setDate] = useState("");
+  const [exerciseName, setExerciseName] = useState("");
+  const [weight, setWeight] = useState("");
+  const [sets, setSets] = useState("");
+  const [reps, setReps] = useState("");
+  // const [isOpen, setOpen] = useState(false);
+  // const [exercises, setExercises] = useState([]);
+  const [data, setData]= useState({})
+
   const [workouts] = useState([
     {
       id: 1,
@@ -32,6 +61,21 @@ function Home() {
       ],
     },
   ]);
+
+  const onSubmit = ()=>{
+    setData({
+      workoutName,
+      date,
+      exerciseName,
+      weight,
+      sets,
+      reps
+    })
+  }
+
+  useEffect(()=>{
+    console.log(data)
+  },[data])
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -64,9 +108,127 @@ function Home() {
                   </h2>
                   {/* Add Workout button */}
                   <div>
-                    <Button className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold">
-                      Add Workout
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        {/* <ExerciseCategory key={index} exercise={exercise} /> */}
+                        <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2">
+                          <div className="h-full flex justify-center items-center">
+                            <Button className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold">
+                              Add Workout
+                            </Button>
+                          </div>
+                          {/* {isOpen && <InputModal exercise={exercise} onClose={() => setIsOpen(false)} />} */}
+                        </div>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Add Set & Reps</DialogTitle>
+                          <DialogDescription>
+                            Enter the number of sets and reps for .
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          {/* workout Name */}
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="sets" className="text-right">
+                              Workout Name
+                            </Label>
+                            <Input
+                              id="sets"
+                              value={workoutName}
+                              onChange={(e) => setWorkoutName(e.target.value)}
+                              className="col-span-3"
+                            />
+                          </div>
+
+                          {/* Date picker */}
+                          <div className="mt-4 flex justify-center">
+                            <div className="flex flex-col">
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button variant={"outline"} className="">
+                                    {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
+                                    {date ? (
+                                      format(date, "PPP")
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto p-0"
+                                  align="start"
+                                >
+                                  <Calendar
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={setDate}
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </div>
+                          </div>
+
+                          {/* Rendering after date and name is selected */}
+                          {workoutName && date && (
+                            <div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="sets" className="text-right">
+                                  Exercise Name
+                                </Label>
+                                <Input
+                                  id="sets"
+                                  value={exerciseName}
+                                  onChange={(e) =>
+                                    setExerciseName(e.target.value)
+                                  }
+                                  className="col-span-3"
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="sets" className="text-right">
+                                  Weight
+                                </Label>
+                                <Input
+                                  id="sets"
+                                  value={weight}
+                                  onChange={(e) => setWeight(e.target.value)}
+                                  className="col-span-3"
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="sets" className="text-right">
+                                  Sets
+                                </Label>
+                                <Input
+                                  id="sets"
+                                  value={sets}
+                                  onChange={(e) => setSets(e.target.value)}
+                                  className="col-span-3"
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="reps" className="text-right">
+                                  Reps
+                                </Label>
+                                <Input
+                                  id="reps"
+                                  value={reps}
+                                  onChange={(e) => setReps(e.target.value)}
+                                  className="col-span-3"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button type="submit" onSubmit={onSubmit}>Save</Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
                 <h2 className="text-white text-lg font-semibold mb-2">

@@ -3,13 +3,13 @@ import Home from "./pages/Home";
 import Progress from "./pages/Progress";
 import Plans from "./pages/Plans";
 import Login from "./pages/Login";
-import Push from "./pages/Push";
 import Pull from "./pages/Pull";
 import Legs from "./pages/Legs";
 import NavBar from "./components/navigation/NavBar";
 
+
 function App() {
-  const user = false;
+  const user = true;
 
   return (
     <BrowserRouter>
@@ -33,7 +33,6 @@ function App() {
               element={user ? <Plans /> : <Navigate to="/login" />}
             />
             <Route path="/login" element={<Login />} />
-            <Route path="/push" element={<Push />} />
             <Route path="/pull" element={<Pull />} />
             <Route path="/legs" element={<Legs />} />
           </Routes>
