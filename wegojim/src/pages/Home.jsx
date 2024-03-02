@@ -30,7 +30,18 @@ function Home() {
   const [reps, setReps] = useState("");
   // const [isOpen, setOpen] = useState(false);
   // const [exercises, setExercises] = useState([]);
-  const [data, setData]= useState({})
+  const [data, setData] = useState({
+    workoutName: "",
+    date: "",
+    exercises: [
+      {
+        exerciseName: "",
+        weight: "",
+        sets: "",
+        reps: "",
+      },
+    ],
+  });
 
   const [workouts] = useState([
     {
@@ -62,20 +73,29 @@ function Home() {
     },
   ]);
 
-  const onSubmit = ()=>{
-    setData({
+  const onSubmit = () => {
+    // Update the exercises array with the entered exercise details
+    console.log("calleds")
+    setData((prevData) => ({
+      ...prevData,
       workoutName,
       date,
-      exerciseName,
-      weight,
-      sets,
-      reps
-    })
-  }
+      exercises: [
+        ...prevData.exercises,
+        {
+          exerciseName,
+          weight,
+          sets,
+          reps,
+        },
+      ],
+    }));
+    console.log(data);
+  };
 
-  useEffect(()=>{
-    console.log(data)
-  },[data])
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -120,114 +140,127 @@ function Home() {
                           {/* {isOpen && <InputModal exercise={exercise} onClose={() => setIsOpen(false)} />} */}
                         </div>
                       </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader>
-                          <DialogTitle>Add Set & Reps</DialogTitle>
-                          <DialogDescription>
-                            Enter the number of sets and reps for .
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          {/* workout Name */}
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="sets" className="text-right">
-                              Workout Name
-                            </Label>
-                            <Input
-                              id="sets"
-                              value={workoutName}
-                              onChange={(e) => setWorkoutName(e.target.value)}
-                              className="col-span-3"
-                            />
-                          </div>
+                      <form onSubmit={onSubmit}>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>Add Set & Reps</DialogTitle>
+                            <DialogDescription>
+                              Enter the number of sets and reps for .
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="grid gap-4 py-4">
+                            {/* Date picker */}
+                            <div className="mt-4 flex justify-center">
+                              <div className="flex flex-col">
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button variant={"outline"} className="">
+                                      {date ? (
+                                        format(date, "PPP")
+                                      ) : (
+                                        <span>Pick a date</span>
+                                      )}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent
+                                    className="w-auto p-0"
+                                    align="start"
+                                  >
+                                    <Calendar
+                                      mode="single"
+                                      selected={date}
+                                      onSelect={setDate}
+                                      initialFocus
+                                    />
+                                  </PopoverContent>
+                                </Popover>
+                              </div>
+                            </div>
 
-                          {/* Date picker */}
-                          <div className="mt-4 flex justify-center">
-                            <div className="flex flex-col">
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button variant={"outline"} className="">
-                                    {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
-                                    {date ? (
-                                      format(date, "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-auto p-0"
-                                  align="start"
-                                >
-                                  <Calendar
-                                    mode="single"
-                                    selected={date}
-                                    onSelect={setDate}
-                                    initialFocus
+                            {/* workout Name */}
+                            <div className="grid grid-cols-4 items-center gap-4">
+                              <Label
+                                htmlFor="workoutName"
+                                className="text-right"
+                              >
+                                Workout Name
+                              </Label>
+                              <Input
+                                id="workoutName"
+                                value={workoutName}
+                                onChange={(e) => setWorkoutName(e.target.value)}
+                                className="col-span-3"
+                              />
+                            </div>
+
+                            {/* Rendering after date and name is selected */}
+                            {workoutName && date && (
+                              <div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label
+                                    htmlFor="exerciseName"
+                                    className="text-right"
+                                  >
+                                    Exercise Name
+                                  </Label>
+                                  <Input
+                                    id="exerciseName"
+                                    value={exerciseName}
+                                    onChange={(e) =>
+                                      setExerciseName(e.target.value)
+                                    }
+                                    className="col-span-3"
                                   />
-                                </PopoverContent>
-                              </Popover>
-                            </div>
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label
+                                    htmlFor="weight"
+                                    className="text-right"
+                                  >
+                                    Weight
+                                  </Label>
+                                  <Input
+                                    id="weight"
+                                    value={weight}
+                                    onChange={(e) => setWeight(e.target.value)}
+                                    className="col-span-3"
+                                  />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label htmlFor="sets" className="text-right">
+                                    Sets
+                                  </Label>
+                                  <Input
+                                    id="sets"
+                                    value={sets}
+                                    onChange={(e) => setSets(e.target.value)}
+                                    className="col-span-3"
+                                  />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label htmlFor="reps" className="text-right">
+                                    Reps
+                                  </Label>
+                                  <Input
+                                    id="reps"
+                                    value={reps}
+                                    onChange={(e) => setReps(e.target.value)}
+                                    className="col-span-3"
+                                  />
+                                </div>
+                              </div>
+                            )}
                           </div>
 
-                          {/* Rendering after date and name is selected */}
-                          {workoutName && date && (
-                            <div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="sets" className="text-right">
-                                  Exercise Name
-                                </Label>
-                                <Input
-                                  id="sets"
-                                  value={exerciseName}
-                                  onChange={(e) =>
-                                    setExerciseName(e.target.value)
-                                  }
-                                  className="col-span-3"
-                                />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="sets" className="text-right">
-                                  Weight
-                                </Label>
-                                <Input
-                                  id="sets"
-                                  value={weight}
-                                  onChange={(e) => setWeight(e.target.value)}
-                                  className="col-span-3"
-                                />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="sets" className="text-right">
-                                  Sets
-                                </Label>
-                                <Input
-                                  id="sets"
-                                  value={sets}
-                                  onChange={(e) => setSets(e.target.value)}
-                                  className="col-span-3"
-                                />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="reps" className="text-right">
-                                  Reps
-                                </Label>
-                                <Input
-                                  id="reps"
-                                  value={reps}
-                                  onChange={(e) => setReps(e.target.value)}
-                                  className="col-span-3"
-                                />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <DialogFooter>
-                          <DialogClose asChild>
-                            <Button type="submit" onSubmit={onSubmit}>Save</Button>
-                          </DialogClose>
-                        </DialogFooter>
-                      </DialogContent>
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button type="submit" onSubmit={onSubmit}>
+                                Save
+                              </Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </DialogContent>
+                      </form>
                     </Dialog>
                   </div>
                 </div>
