@@ -2,12 +2,7 @@ import { Button } from "@/components/ui/button";
 import WorkOutCard from "@/components/workouts/WorkOutCard";
 import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
+
 import {
   Dialog,
   DialogClose,
@@ -28,17 +23,16 @@ function Home() {
   const [weight, setWeight] = useState("");
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
-  // const [isOpen, setOpen] = useState(false);
-  // const [exercises, setExercises] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState({
-    workoutName: "",
-    date: "",
+    workoutName: null,
+    date: null,
     exercises: [
       {
-        exerciseName: "",
-        weight: "",
-        sets: "",
-        reps: "",
+        exerciseName: null,
+        weight: null,
+        sets: null,
+        reps: null,
       },
     ],
   });
@@ -73,15 +67,11 @@ function Home() {
     },
   ]);
 
-  const onSubmit = () => {
-    // Update the exercises array with the entered exercise details
-    console.log("calleds")
-    setData((prevData) => ({
-      ...prevData,
+  const handleSubmit = () => {
+    setData(() => ({
       workoutName,
       date,
       exercises: [
-        ...prevData.exercises,
         {
           exerciseName,
           weight,
@@ -90,7 +80,6 @@ function Home() {
         },
       ],
     }));
-    console.log(data);
   };
 
   useEffect(() => {
@@ -99,7 +88,6 @@ function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {/* workout cards */}
       <div className="flex flex-wrap justify-center w-full">
         {workouts.map((workout, index) => (
           <div className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-2" key={index}>
@@ -107,9 +95,7 @@ function Home() {
           </div>
         ))}
       </div>
-      {/* ... */}
 
-      {/* graph and add workout */}
       <div className="flex flex-col md:flex-row w-full mt-4">
         <div className="w-full md:w-1/2 p-2">
           <div className="bg-gray-800 p-4 rounded-lg h-full">
@@ -119,150 +105,96 @@ function Home() {
         </div>
         <div className="w-full md:w-1/2 p-2">
           <div className="bg-green-600 p-4 rounded-lg h-full">
-            {/* Render previous workouts if available */}
             {workouts.length > 0 ? (
               <>
-                <div className="flex flex-row justify-between items-center mb-4">
-                  <h2 className="text-white text-lg font-semibold">
-                    Add Workout
-                  </h2>
-                  {/* Add Workout button */}
-                  <div>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        {/* <ExerciseCategory key={index} exercise={exercise} /> */}
-                        <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2">
-                          <div className="h-full flex justify-center items-center">
-                            <Button className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold">
-                              Add Workout
-                            </Button>
-                          </div>
-                          {/* {isOpen && <InputModal exercise={exercise} onClose={() => setIsOpen(false)} />} */}
-                        </div>
-                      </DialogTrigger>
-                      <form onSubmit={onSubmit}>
-                        <DialogContent className="sm:max-w-[425px]">
-                          <DialogHeader>
-                            <DialogTitle>Add Set & Reps</DialogTitle>
-                            <DialogDescription>
-                              Enter the number of sets and reps for .
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="grid gap-4 py-4">
-                            {/* Date picker */}
-                            <div className="mt-4 flex justify-center">
-                              <div className="flex flex-col">
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <Button variant={"outline"} className="">
-                                      {date ? (
-                                        format(date, "PPP")
-                                      ) : (
-                                        <span>Pick a date</span>
-                                      )}
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent
-                                    className="w-auto p-0"
-                                    align="start"
-                                  >
-                                    <Calendar
-                                      mode="single"
-                                      selected={date}
-                                      onSelect={setDate}
-                                      initialFocus
-                                    />
-                                  </PopoverContent>
-                                </Popover>
-                              </div>
-                            </div>
-
-                            {/* workout Name */}
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label
-                                htmlFor="workoutName"
-                                className="text-right"
-                              >
-                                Workout Name
-                              </Label>
-                              <Input
-                                id="workoutName"
-                                value={workoutName}
-                                onChange={(e) => setWorkoutName(e.target.value)}
-                                className="col-span-3"
+                <div className="flex flex-col items-center justify-center ">
+                  <Dialog isOpen={isOpen} onDismiss={() => setIsOpen(false)} className="h-100 overflow-y-scroll">
+                    <DialogTrigger>
+                      <Button
+                        className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold"
+                        onClick={() => setIsOpen(true)}
+                      >
+                        Add Workout
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px] h-[400px] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Add Workout</DialogTitle>
+                        <DialogDescription>
+                          Please enter workout details.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          handleSubmit();
+                        }}
+                      >
+                        <div className="grid gap-4 py-4">
+                          <div className="mt-4 flex justify-center">
+                            <div className="flex flex-col">
+                              <Label>Date</Label>
+                              <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={setDate}
+                                
                               />
                             </div>
-
-                            {/* Rendering after date and name is selected */}
-                            {workoutName && date && (
-                              <div>
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label
-                                    htmlFor="exerciseName"
-                                    className="text-right"
-                                  >
-                                    Exercise Name
-                                  </Label>
-                                  <Input
-                                    id="exerciseName"
-                                    value={exerciseName}
-                                    onChange={(e) =>
-                                      setExerciseName(e.target.value)
-                                    }
-                                    className="col-span-3"
-                                  />
-                                </div>
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label
-                                    htmlFor="weight"
-                                    className="text-right"
-                                  >
-                                    Weight
-                                  </Label>
-                                  <Input
-                                    id="weight"
-                                    value={weight}
-                                    onChange={(e) => setWeight(e.target.value)}
-                                    className="col-span-3"
-                                  />
-                                </div>
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label htmlFor="sets" className="text-right">
-                                    Sets
-                                  </Label>
-                                  <Input
-                                    id="sets"
-                                    value={sets}
-                                    onChange={(e) => setSets(e.target.value)}
-                                    className="col-span-3"
-                                  />
-                                </div>
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label htmlFor="reps" className="text-right">
-                                    Reps
-                                  </Label>
-                                  <Input
-                                    id="reps"
-                                    value={reps}
-                                    onChange={(e) => setReps(e.target.value)}
-                                    className="col-span-3"
-                                  />
-                                </div>
-                              </div>
-                            )}
                           </div>
-
-                          <DialogFooter>
-                            <DialogClose asChild>
-                              <Button type="submit" onSubmit={onSubmit}>
-                                Save
-                              </Button>
-                            </DialogClose>
-                          </DialogFooter>
-                        </DialogContent>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label>Workout Name</Label>
+                            <Input
+                              value={workoutName}
+                              onChange={(e) => setWorkoutName(e.target.value)}
+                              required
+                            />
+                          </div>
+                          {date && workoutName && (
+                            <>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label>Exercise Name</Label>
+                                <Input
+                                  value={exerciseName}
+                                  onChange={(e) =>
+                                    setExerciseName(e.target.value)
+                                  }
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label>Weight</Label>
+                                <Input
+                                  type="number"
+                                  value={weight}
+                                  onChange={(e) => setWeight(e.target.value)}
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label>Sets</Label>
+                                <Input
+                                  type="number"
+                                  value={sets}
+                                  onChange={(e) => setSets(e.target.value)}
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label>Reps</Label>
+                                <Input
+                                  type="number"
+                                  value={reps}
+                                  onChange={(e) => setReps(e.target.value)}
+                                />
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <DialogFooter>
+                          <Button type="submit">Submit</Button>
+                          <DialogClose>Cancel</DialogClose>
+                        </DialogFooter>
                       </form>
-                    </Dialog>
-                  </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
                 <h2 className="text-white text-lg font-semibold mb-2">
                   Previous Workouts
@@ -270,14 +202,12 @@ function Home() {
                 <div>
                   {workouts.map((workout, index) => (
                     <div key={index}>
-                      {/* Display each previous workout */}
                       <p>{workout.day}</p>
                     </div>
                   ))}
                 </div>
               </>
             ) : (
-              // Render Add Workout button in the middle if no previous workouts
               <div className="flex justify-center">
                 <Button className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold">
                   Add Workout
@@ -287,7 +217,6 @@ function Home() {
           </div>
         </div>
       </div>
-      {/* ... */}
     </div>
   );
 }
