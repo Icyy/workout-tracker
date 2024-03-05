@@ -1,8 +1,9 @@
 
 const express = require("express");
 const mongoose = require("mongoose");
-const Workout = require("./workout.model.js/workoutmodel");
-
+const Workout = require("./models/workoutmodel");
+const cors = require("cors");
+const User = require("./models/user");
 const app = express();
 app.use(express.json());
 const port = 3000;
@@ -10,6 +11,7 @@ const port = 3000;
 const uri =
   "mongodb+srv://icyyfawkes:Y5IH3O1clPS2Uz6u@wegojim.uwgtxxd.mongodb.net/?retryWrites=true&w=majority&appName=wegojim";
 
+app.use(cors());
 
 
 mongoose
@@ -53,3 +55,40 @@ app.post("/workouts", async (req, res) => {
 });
 
 // Other routes and middleware can be defined here
+
+
+//login and register routes
+
+app.post("/api/register", async (req,res)=>{
+  console.log(req.body);
+  try {
+    await User.create({
+      username : req.body.username,
+      email : req.body.email,
+      password: req.body.password
+    })
+    res.json({status:"ok"})
+  } catch (error) {
+    res.json({status:"error",error:error})
+  }
+  
+})
+
+app.post("/api/login", async (req,res)=>{
+  console.log(req.body);
+  try {
+    const user = await User.findOne({
+      email : req.body.email,
+      password: req.body.password
+    })
+    if(user){
+      res.json({status:"ok", user:true})
+    }else{
+      res.json({status:"Error", user:false})
+    }
+    
+  } catch (error) {
+    res.json({status:"error",error:error})
+  }
+  
+})

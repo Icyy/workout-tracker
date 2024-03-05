@@ -2,21 +2,64 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/ui/icons";
-import { Button} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-
+  const navigate = useNavigate();
   async function onSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
-    
+    // fetch('http://localhost:3000/api/register',{
+    //     method:'POST',
+    //     headers:{
+    //         'content-type':'application/json'
+    //     },
+    //     body:JSON.stringify({
+    //         username:username,
+    //         email:email,
+    //         password:password
+    //     })
+    // })
+    let data = JSON.stringify({
+      username: username,
+      email: email,
+      password: password,
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "http://localhost:3000/api/register",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status === "ok") {
+          console.log(JSON.stringify(response.data));
+          navigate("/login");
+          setUsername("");
+          setEmail("");
+          setPassword("");
+        } else {
+          console.log(JSON.stringify(response.data.error));
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     setTimeout(() => {
       setIsLoading(false);
