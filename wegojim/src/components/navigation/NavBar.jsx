@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 const NavBar = ({ user }) => {
   return (
@@ -26,7 +27,17 @@ const NavBar = ({ user }) => {
             <UserNav />
           </div>
         ) : (
-          <></>
+          <>
+            <Link
+              to="/login"
+              className={cn(
+                buttonVariants({ variant: "secondary" }),
+                "absolute right-4 top-4 md:right-8 md:top-8"
+              )}
+            >
+              Login
+            </Link>
+          </>
         )}
       </div>
     </div>

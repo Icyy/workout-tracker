@@ -6,10 +6,11 @@ import Login from "./pages/Login";
 import Pull from "./pages/Pull";
 import Legs from "./pages/Legs";
 import NavBar from "./components/navigation/NavBar";
+import Register from "./pages/Register";
 
 
 function App() {
-  const user = true;
+  const user = false;
 
   return (
     <BrowserRouter>
@@ -22,17 +23,18 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={user ? <Home /> : <Navigate to="/login" />}
+              element={user ? <Home /> : <Navigate to="/register" />}
             />
             <Route
               path="/progress"
-              element={user ? <Progress /> : <Navigate to="/login" />}
+              element={user ? <Progress /> : <Navigate to="/register" />}
             />
             <Route
               path="/plans"
-              element={user ? <Plans /> : <Navigate to="/login" />}
+              element={user ? <Plans /> : <Navigate to="/register" />}
             />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/pull" element={<Pull />} />
             <Route path="/legs" element={<Legs />} />
           </Routes>
