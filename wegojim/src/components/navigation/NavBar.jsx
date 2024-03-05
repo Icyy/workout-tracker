@@ -13,8 +13,8 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-const NavBar = ({ user }) => {
-  return (
+
+const NavBar = ({user}) => {  return (
     <div className="border-b">
       <div className="flex h-16 items-center px-4">
         <Link to="/">

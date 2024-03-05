@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+// import useAuthStore from "@/stores/authStore";
+// import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [workoutName, setWorkoutName] = useState("");
@@ -24,6 +26,8 @@ function Home() {
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  // const user = useAuthStore((state)=>{state.user})
+  // const navigate = useNavigate()
   const [data, setData] = useState({
     workoutName: null,
     date: null,
@@ -67,7 +71,10 @@ function Home() {
     },
   ]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(isOpen)
+    setIsOpen(false);
     setData(() => ({
       workoutName,
       date,
@@ -80,6 +87,12 @@ function Home() {
         },
       ],
     }));
+    setWorkoutName("");
+    setDate("")
+    setExerciseName("")
+    setWeight("")
+    setSets("")
+    setReps("")
   };
 
   const handleClose = ()=>{
@@ -91,6 +104,13 @@ function Home() {
     setSets("")
     setReps("")
   }
+
+ 
+  // useEffect(() => {
+  //   if(!user){
+  //     navigate('/register');
+  //   }
+  // }, );
 
   useEffect(() => {
     console.log(data);
@@ -122,7 +142,7 @@ function Home() {
                     <DialogTrigger>
                       <Button
                         className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold"
-                        onClick={() => setIsOpen(true)}
+                        // onClick={() => setIsOpen(true)}
                       >
                         Add Workout
                       </Button>
@@ -135,10 +155,9 @@ function Home() {
                         </DialogDescription>
                       </DialogHeader>
                       <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          handleSubmit();
-                        }}
+                        onSubmit={
+                          handleSubmit
+                        }
                       >
                         <div className="grid gap-4 py-4">
                           <div className="mt-4 flex justify-center">

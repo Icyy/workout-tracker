@@ -7,10 +7,12 @@ import Pull from "./pages/Pull";
 import Legs from "./pages/Legs";
 import NavBar from "./components/navigation/NavBar";
 import Register from "./pages/Register";
+import useAuthStore from "./stores/authStore";
 
 
 function App() {
-  const user = false;
+  const user = useAuthStore((state) => state.user);
+  console.log(user);
 
   return (
     <BrowserRouter>
@@ -23,18 +25,21 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={user ? <Home /> : <Navigate to="/register" />}
+              element={user?<Home />:<Navigate to="/register" />}
             />
             <Route
               path="/progress"
-              element={user ? <Progress /> : <Navigate to="/register" />}
+              element={<Progress />}
             />
             <Route
               path="/plans"
-              element={user ? <Plans /> : <Navigate to="/register" />}
+              element={<Plans />}
             />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route
+              path="/register"
+              element={<Register />}
+            />
             <Route path="/pull" element={<Pull />} />
             <Route path="/legs" element={<Legs />} />
           </Routes>

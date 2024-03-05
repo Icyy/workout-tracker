@@ -5,22 +5,61 @@ import { Icons } from "@/components/ui/icons";
 import { Button} from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import useAuthStore from '../stores/authStore';
 
 
 const Login = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-
-  async function onSubmit(event) {
+  const setUser = useAuthStore((state) => state.setUser);
+  const user = useAuthStore((state)=>{state.user})
+  const navigate = useNavigate();
+  
+  const onSubmit = async (event)=> {
     event.preventDefault();
     setIsLoading(true);
-    
+    let data = JSON.stringify({
+      email: email,
+      password: password,
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "http://localhost:3000/api/login",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status === "ok" && response.data.userLoggedIn) {
+          console.log(JSON.stringify(response.data));
+          setUser(response.data.userLoggedIn);
+          console.log(response.data.userLoggedIn);
+          setEmail(response.data.email)
+          navigate("/")
+          console.log(user);
+          
+        } else {
+          console.log(JSON.stringify(response.data.status));
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     setTimeout(() => {
       setIsLoading(false);
     }, 3000);
   }
+
 
   return (
     <div>
