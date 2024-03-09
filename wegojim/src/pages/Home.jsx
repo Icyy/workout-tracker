@@ -15,8 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-// import useAuthStore from "@/stores/authStore";
-// import { useNavigate } from "react-router-dom";
+import useAuthStore from "@/stores/authStore";
 
 function Home() {
   const [workoutName, setWorkoutName] = useState("");
@@ -26,9 +25,11 @@ function Home() {
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  // const user = useAuthStore((state)=>{state.user})
-  // const navigate = useNavigate()
+  const userId = useAuthStore((state)=>state.userId)
+
+  console.log(userId)
   const [data, setData] = useState({
+    userID:userId,
     workoutName: null,
     date: null,
     exercises: [
@@ -73,8 +74,7 @@ function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(isOpen)
-    setIsOpen(false);
+    setIsOpen(false); // Close the dialog
     setData(() => ({
       workoutName,
       date,
@@ -88,29 +88,31 @@ function Home() {
       ],
     }));
     setWorkoutName("");
-    setDate("")
-    setExerciseName("")
-    setWeight("")
-    setSets("")
-    setReps("")
+    setDate("");
+    setExerciseName("");
+    setWeight("");
+    setSets("");
+    setReps("");
   };
 
-  const handleClose = ()=>{
+  const handleClose = () => {
     setIsOpen(false);
     setWorkoutName("");
-    setDate("")
-    setExerciseName("")
-    setWeight("")
-    setSets("")
-    setReps("")
-  }
+    setDate("");
+    setExerciseName("");
+    setWeight("");
+    setSets("");
+    setReps("");
+  };
 
- 
-  // useEffect(() => {
-  //   if(!user){
-  //     navigate('/register');
-  //   }
-  // }, );
+  // const clrState = ()=>{
+  //   setWorkoutName("");
+  //   setDate("");
+  //   setExerciseName("");
+  //   setWeight("");
+  //   setSets("");
+  //   setReps("");
+  // }
 
   useEffect(() => {
     console.log(data);
@@ -138,11 +140,11 @@ function Home() {
             {workouts.length > 0 ? (
               <>
                 <div className="flex flex-col items-center justify-center ">
-                  <Dialog isOpen={isOpen} onDismiss={handleClose} onOpenChange={handleClose} className="h-100 overflow-y-scroll">
+                  <Dialog open={isOpen} onOpenChange={()=>{setIsOpen}} className="h-100 overflow-y-scroll">
                     <DialogTrigger>
                       <Button
                         className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold"
-                        // onClick={() => setIsOpen(true)}
+                        onClick={() => setIsOpen(true)}
                       >
                         Add Workout
                       </Button>
@@ -154,11 +156,7 @@ function Home() {
                           Please enter workout details.
                         </DialogDescription>
                       </DialogHeader>
-                      <form
-                        onSubmit={
-                          handleSubmit
-                        }
-                      >
+                      <form onSubmit={handleSubmit}>
                         <div className="grid gap-4 py-4">
                           <div className="mt-4 flex justify-center">
                             <div className="flex flex-col">
@@ -167,7 +165,6 @@ function Home() {
                                 mode="single"
                                 selected={date}
                                 onSelect={setDate}
-                                
                               />
                             </div>
                           </div>

@@ -12,6 +12,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import useAuthStore from "@/stores/authStore";
 
 
 const NavBar = ({user}) => {  return (
@@ -46,6 +47,11 @@ const NavBar = ({user}) => {  return (
 
 export default NavBar;
 
+function handleLogout(){
+  useAuthStore.getState().clearUser();
+  localStorage.removeItem('userData');
+}
+
 function UserNav() {
   return (
     <DropdownMenu>
@@ -72,18 +78,9 @@ function UserNav() {
             Profile
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout} className='cursor-pointer'>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>

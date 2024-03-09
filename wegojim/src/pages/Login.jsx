@@ -12,10 +12,13 @@ import useAuthStore from '../stores/authStore';
 
 const Login = () => {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+  const email = useAuthStore((state)=>state.email);
   const [password, setPassword] = React.useState("");
   const setUser = useAuthStore((state) => state.setUser);
-  const user = useAuthStore((state)=>{state.user})
+  const setEmail = useAuthStore((state) => state.setEmail);
+  const userId = useAuthStore((state) => state.userId);
+  const user = useAuthStore((state) => state.user);
+  const setUserId = useAuthStore((state) => state.setUserId); // Access setUserId function
   const navigate = useNavigate();
   
   const onSubmit = async (event)=> {
@@ -24,6 +27,7 @@ const Login = () => {
     let data = JSON.stringify({
       email: email,
       password: password,
+      userId: userId
     });
 
     let config = {
@@ -42,9 +46,10 @@ const Login = () => {
         if (response.data.status === "ok" && response.data.userLoggedIn) {
           console.log(JSON.stringify(response.data));
           setUser(response.data.userLoggedIn);
-          console.log(response.data.userLoggedIn);
-          setEmail(response.data.email)
-          navigate("/")
+          setEmail(response.data.email);
+          localStorage.setItem('userData', JSON.stringify(response.data.userLoggedIn));
+          setUserId(response.data.userId); // Set userId in the store
+          navigate("/");
           console.log(user);
           
         } else {
