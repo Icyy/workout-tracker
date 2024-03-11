@@ -10,12 +10,46 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import useAuthStore from "@/stores/authStore";
 
 
-const NavBar = ({user}) => {  return (
+const NavBar = ({user}) => {  
+  const location = useLocation();
+
+  const renderRightButton = () => {
+    if (location.pathname === "/login") {
+      return (
+        <Link
+          to="/register"
+          className={cn(
+            buttonVariants({ variant: "secondary" }),
+            "absolute right-4 top-4 md:right-8 md:top-8"
+          )}
+        >
+          Register
+        </Link>
+      );
+    } else if (location.pathname === "/register") {
+      return (
+        <Link
+          to="/login"
+          className={cn(
+            buttonVariants({ variant: "secondary" }),
+            "absolute right-4 top-4 md:right-8 md:top-8"
+          )}
+        >
+          Login
+        </Link>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  
+  return (
     <div className="border-b">
       <div className="flex h-16 items-center px-4">
         <Link to="/">
@@ -29,15 +63,7 @@ const NavBar = ({user}) => {  return (
           </div>
         ) : (
           <>
-            <Link
-              to="/login"
-              className={cn(
-                buttonVariants({ variant: "secondary" }),
-                "absolute right-4 top-4 md:right-8 md:top-8"
-              )}
-            >
-              Login
-            </Link>
+            {renderRightButton()}
           </>
         )}
       </div>
