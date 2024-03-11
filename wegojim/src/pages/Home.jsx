@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import WorkOutCard from "@/components/workouts/WorkOutCard";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 
 import {
@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import useAuthStore from "@/stores/authStore";
+// import useAuthStore from "@/stores/authStore";
+import axios from "axios";
 
 function Home() {
   const [workoutName, setWorkoutName] = useState("");
@@ -25,22 +26,20 @@ function Home() {
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const userId = useAuthStore((state)=>state.userId)
-
-  console.log(userId)
-  const [data, setData] = useState({
-    userID:userId,
-    workoutName: null,
-    date: null,
-    exercises: [
-      {
-        exerciseName: null,
-        weight: null,
-        sets: null,
-        reps: null,
-      },
-    ],
-  });
+  const userId = localStorage.getItem(userId)
+  // const [data, setData] = useState({
+  //   userId: userId,
+  //   workoutName: null,
+  //   date: null,
+  //   exercises: [
+  //     {
+  //       exerciseName: null,
+  //       weight: null,
+  //       sets: null,
+  //       reps: null,
+  //     },
+  //   ],
+  // });
 
   const [workouts] = useState([
     {
@@ -72,10 +71,13 @@ function Home() {
     },
   ]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsOpen(false); // Close the dialog
-    setData(() => ({
+  
+    // Capture the latest state values
+    const requestData = {
+      userId,
       workoutName,
       date,
       exercises: [
@@ -86,15 +88,24 @@ function Home() {
           reps,
         },
       ],
-    }));
-    setWorkoutName("");
-    setDate("");
-    setExerciseName("");
-    setWeight("");
-    setSets("");
-    setReps("");
+    };
+  
+    try {
+      // Send the request with the captured data
+      const response = await axios.post("http://localhost:3000/api/workouts", requestData);
+      console.log(response.data);
+  
+      // Reset form fields after successful submission
+      setWorkoutName("");
+      setDate("");
+      setExerciseName("");
+      setWeight("");
+      setSets("");
+      setReps("");
+    } catch (error) {
+      console.error("Error submitting workout:", error);
+    }
   };
-
   const handleClose = () => {
     setIsOpen(false);
     setWorkoutName("");
@@ -113,10 +124,6 @@ function Home() {
   //   setSets("");
   //   setReps("");
   // }
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -140,7 +147,13 @@ function Home() {
             {workouts.length > 0 ? (
               <>
                 <div className="flex flex-col items-center justify-center ">
-                  <Dialog open={isOpen} onOpenChange={()=>{setIsOpen}} className="h-100 overflow-y-scroll">
+                  <Dialog
+                    open={isOpen}
+                    onOpenChange={() => {
+                      setIsOpen;
+                    }}
+                    className="h-100 overflow-y-scroll"
+                  >
                     <DialogTrigger>
                       <Button
                         className="bg-white text-green-600 px-4 py-2 rounded-md font-semibold"
@@ -188,7 +201,7 @@ function Home() {
                                 />
                               </div>
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <Label>Weight</Label>
+                                <Label>Weight (kgs)</Label>
                                 <Input
                                   type="number"
                                   value={weight}
@@ -216,7 +229,9 @@ function Home() {
                         </div>
                         <DialogFooter>
                           <Button type="submit">Submit</Button>
-                          <DialogClose onClick={handleClose}>Cancel</DialogClose>
+                          <DialogClose onClick={handleClose}>
+                            Cancel
+                          </DialogClose>
                         </DialogFooter>
                       </form>
                     </DialogContent>

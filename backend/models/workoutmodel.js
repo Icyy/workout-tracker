@@ -15,9 +15,9 @@ const workoutSchema = new mongoose.Schema({
   },
   exercises: [{
     exerciseName: String,
+    weight: Number,
     sets: Number,
-    reps: Number,
-    weight: Number
+    reps: Number
   }]
 });
 

@@ -13,11 +13,19 @@ import { useEffect, useState } from "react";
 function App() {
   const [loading, setLoading] = useState(true);
   const user = useAuthStore((state) => state.user);
+  const userId = useAuthStore((state) => state.user.Id);
 
+
+  console.log(userId)
   useEffect(() => {
-    useAuthStore.getState().loadUser();
-    setLoading(false);
+    const loadUserData = async () => {
+      await useAuthStore.getState().loadUser();
+      setLoading(false);
+    };
+  
+    loadUserData();
   }, []);
+  
 
   if (loading) {
     return <div>Loading...</div>;

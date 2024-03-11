@@ -1,5 +1,4 @@
-import * as React from "react";
-
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/ui/icons";
 import { Button} from "@/components/ui/button";
@@ -11,59 +10,42 @@ import useAuthStore from '../stores/authStore';
 
 
 const Login = () => {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const email = useAuthStore((state)=>state.email);
-  const [password, setPassword] = React.useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const [password, setPassword] = useState("");
   const setUser = useAuthStore((state) => state.setUser);
-  const setEmail = useAuthStore((state) => state.setEmail);
-  const userId = useAuthStore((state) => state.userId);
-  const user = useAuthStore((state) => state.user);
-  const setUserId = useAuthStore((state) => state.setUserId); // Access setUserId function
+  const setUserId = useAuthStore((state)=>state.userId)
   const navigate = useNavigate();
-  
-  const onSubmit = async (event)=> {
+
+  const onSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-    let data = JSON.stringify({
-      email: email,
-      password: password,
-      userId: userId
-    });
 
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "http://localhost:3000/api/login",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        if (response.data.status === "ok" && response.data.userLoggedIn) {
-          console.log(JSON.stringify(response.data));
-          setUser(response.data.userLoggedIn);
-          setEmail(response.data.email);
-          localStorage.setItem('userData', JSON.stringify(response.data.userLoggedIn));
-          setUserId(response.data.userId); // Set userId in the store
-          navigate("/");
-          console.log(user);
-          
-        } else {
-          console.log(JSON.stringify(response.data.status));
-        }
-      })
-      .catch((error) => {
-        console.log(error);
+    try {
+      const response = await axios.post("http://localhost:3000/api/login", {
+        userEmail,
+        password,
       });
+      
+      const { token, userId } = response.data;
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }
+      // Store token and user ID in local storage
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", userId);
+
+      // Set user and user ID in state
+      setUser(true);
+      setUserId(userId);
+
+      // Navigate to the home page
+      navigate("/");
+    } catch (error) {
+      console.error("Login error:", error);
+      // Handle login error (e.g., display error message)
+    }
+
+    setIsLoading(false);
+  };
 
 
   return (
@@ -93,8 +75,8 @@ const Login = () => {
                     autoComplete="email"
                     autoCorrect="off"
                     disabled={isLoading}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
                   />
                 </div>
                 <div className="grid gap-1">
