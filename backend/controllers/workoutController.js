@@ -37,3 +37,13 @@ exports.createOrUpdateWorkout = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+exports.getWorkoutNames = async (req, res) => {
+    try {
+      const workoutNames = await Workout.distinct("workoutName");
+      res.status(200).json(workoutNames);
+    } catch (error) {
+      console.error("Error fetching workout names:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  };

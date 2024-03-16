@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import WorkOutCard from "@/components/workouts/WorkOutCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 
 import {
@@ -26,7 +26,9 @@ function Home() {
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const userId = localStorage.getItem("userId")
+  const userId = localStorage.getItem("userId");
+  const [newWorkoutName, setNewWorkoutName] = useState("");
+  const [workoutOptions, setWorkoutOptions] = useState([]);
   // const [data, setData] = useState({
   //   userId: userId,
   //   workoutName: null,
@@ -40,6 +42,25 @@ function Home() {
   //     },
   //   ],
   // });
+
+  useEffect(()=>{
+    const fetchWorkoutNames = async()=>{
+      try {
+        // Send the request with the captured data
+        const response = await axios.get(
+          "http://localhost:3000/api/getworkoutname",
+        );
+        console.log(response.data);
+        const workoutNames = response.data;
+      // Set the fetched workout names in the state
+      setWorkoutOptions(workoutNames);
+      } catch (error) {
+        console.error("Error fetching workout:", error);
+      }
+
+    }
+    fetchWorkoutNames();
+  },[])
 
   const [workouts] = useState([
     {
@@ -74,7 +95,7 @@ function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsOpen(false); // Close the dialog
-  
+
     // Capture the latest state values
     const requestData = {
       userId,
@@ -89,17 +110,21 @@ function Home() {
         },
       ],
     };
-  
+
     try {
       // Send the request with the captured data
-      const response = await axios.post("http://localhost:3000/api/workouts", requestData);
+      const response = await axios.post(
+        "http://localhost:3000/api/workouts",
+        requestData
+      );
       console.log(response.data);
-  
+
       // Reset form fields after successful submission
       setWorkoutName("");
       setDate("");
       setExerciseName("");
       setWeight("");
+      setWorkoutName("");
       setSets("");
       setReps("");
     } catch (error) {
@@ -112,9 +137,20 @@ function Home() {
     setDate("");
     setExerciseName("");
     setWeight("");
+    setWorkoutName("");
     setSets("");
     setReps("");
   };
+
+  const handleAddNewWorkout = () => {
+    // Save the new workout name to the database or perform any necessary action
+    console.log("New workout name:", newWorkoutName);
+    setWorkoutOptions(prevOptions => [...prevOptions, newWorkoutName]);
+
+    // Set the newly added workout name as the selected option
+    setWorkoutName(newWorkoutName);
+  };
+
 
   // const clrState = ()=>{
   //   setWorkoutName("");
@@ -183,11 +219,35 @@ function Home() {
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label>Workout Name</Label>
-                            <Input
+                            <select
                               value={workoutName}
                               onChange={(e) => setWorkoutName(e.target.value)}
                               required
-                            />
+                            >
+                              <option value="" disabled>
+                                Select a workout
+                              </option>
+                              {workoutOptions.map((option, index) => (
+                                <option key={index} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                              {/* Option with the button to add a new workout name */}
+                              <option value="__addNew__">
+                                + Add New Workout
+                              </option>
+                            </select>
+                            {/* Render input field when the "__addNew__" option is selected */}
+                            {workoutName === "__addNew__" && (
+                              <Input
+                                placeholder="Enter New Workout Name"
+                                value={newWorkoutName}
+                                onChange={(e) =>
+                                  setNewWorkoutName(e.target.value)
+                                }
+                                onBlur={() => handleAddNewWorkout()}
+                              />
+                            )}
                           </div>
                           {date && workoutName && (
                             <>
