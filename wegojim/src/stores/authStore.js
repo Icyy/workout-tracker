@@ -11,9 +11,9 @@ const useAuthStore = create((set) => ({
   clearUser: () => set({ user: null, email: null, userId: null, token: null }), // Clear all user data including token
   loadUser: () => {
     try {
-      const storedUser = localStorage.getItem('userData');
+      const storedUser = localStorage.getItem('userId');
       if (storedUser) {
-        set({ user: JSON.parse(storedUser) });
+        set({ userId: JSON.parse(storedUser) });
       }
       const storedToken = localStorage.getItem('token'); // Load token from localStorage
       if (storedToken) {

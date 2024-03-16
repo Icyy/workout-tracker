@@ -26,7 +26,7 @@ function Home() {
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const userId = localStorage.getItem(userId)
+  const userId = localStorage.getItem("userId")
   // const [data, setData] = useState({
   //   userId: userId,
   //   workoutName: null,

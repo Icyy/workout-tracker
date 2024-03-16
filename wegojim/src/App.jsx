@@ -12,8 +12,7 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const user = useAuthStore((state) => state.user);
-  const userId = useAuthStore((state) => state.user.Id);
+  const userId = localStorage.getItem('userId')
 
 
   console.log(userId)
@@ -35,18 +34,18 @@ function App() {
     <BrowserRouter>
       <div className="mt-5">
         {/* NavBar */}
-        <NavBar user={user} />
+        <NavBar user={userId} />
 
         {/* Routed Pages */}
         <div className="mx-auto p-10">
           <Routes>
-            <Route path="/" element={user ? <Home /> : <Navigate to="/register" />} />
-            <Route path="/progress" element={user ? <Progress /> : <Navigate to="/login" />} />
-            <Route path="/plans" element={user ? <Plans /> : <Navigate to="/login" />} />
+            <Route path="/" element={userId ? <Home /> : <Navigate to="/register" />} />
+            <Route path="/progress" element={userId ? <Progress /> : <Navigate to="/login" />} />
+            <Route path="/plans" element={userId ? <Plans /> : <Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/pull" element={user ? <Pull /> : <Navigate to="/login" />} />
-            <Route path="/legs" element={user ? <Legs /> : <Navigate to="/login" />} />
+            <Route path="/pull" element={userId ? <Pull /> : <Navigate to="/login" />} />
+            <Route path="/legs" element={userId ? <Legs /> : <Navigate to="/login" />} />
           </Routes>
         </div>
       </div>
