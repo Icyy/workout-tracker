@@ -1,6 +1,8 @@
 // controllers/authController.js
 
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const generateToken  = require("../utils/generateToken");
 
 exports.registerUser = async (req, res) => {
   try {
@@ -18,6 +20,9 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.userEmail });
+
+    generateToken(res, user._id)
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
