@@ -12,10 +12,9 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const userId = localStorage.getItem('userId')
+  const userData = localStorage.getItem('userData')
+  console.log(userData)
 
-
-  console.log(userId)
   useEffect(() => {
     const loadUserData = async () => {
       await useAuthStore.getState().loadUser();
@@ -24,6 +23,10 @@ function App() {
   
     loadUserData();
   }, []);
+
+  // useEffect(()=>{
+  //   setLoading(false)
+  // },userId)
   
 
   if (loading) {
@@ -34,18 +37,18 @@ function App() {
     <BrowserRouter>
       <div className="mt-5">
         {/* NavBar */}
-        <NavBar user={userId} />
+        <NavBar user={userData} />
 
         {/* Routed Pages */}
         <div className="mx-auto p-10">
           <Routes>
-            <Route path="/" element={userId ? <Home /> : <Navigate to="/register" />} />
-            <Route path="/progress" element={userId ? <Progress /> : <Navigate to="/login" />} />
-            <Route path="/plans" element={userId ? <Plans /> : <Navigate to="/login" />} />
+            <Route path="/" element={userData ? <Home /> : <Navigate to="/login" />} />
+            <Route path="/progress" element={userData ? <Progress /> : <Navigate to="/login" />} />
+            <Route path="/plans" element={userData ? <Plans /> : <Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/pull" element={userId ? <Pull /> : <Navigate to="/login" />} />
-            <Route path="/legs" element={userId ? <Legs /> : <Navigate to="/login" />} />
+            <Route path="/pull" element={userData ? <Pull /> : <Navigate to="/login" />} />
+            <Route path="/legs" element={userData ? <Legs /> : <Navigate to="/login" />} />
           </Routes>
         </div>
       </div>

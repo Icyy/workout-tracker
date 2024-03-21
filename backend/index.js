@@ -1,12 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
 const app = express();
+require('dotenv').config();
 const port = 3000;
 
 const workoutRoutes = require("./routes/workoutRoutes");
 const authRoutes = require("./routes/authRoutes");
-
+app.use(cookieParser())
 app.use(express.json());
 app.use(cors());
 

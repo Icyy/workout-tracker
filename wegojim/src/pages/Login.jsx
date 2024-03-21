@@ -26,17 +26,16 @@ const Login = () => {
         password,
       });
 
-      const { email, userId } = response.data;
-
+      const { email, username, userId, userLoggedIn } = response.data;
+      console.log(response.data)
       if (userId) {
         // Store token and user ID in local storage
 
-        localStorage.setItem("userId", userId);
-
+        localStorage.setItem("userData", JSON.stringify({userId, username, email, userLoggedIn}));
+        console.log(localStorage.getItem("userData"))
         // Set user and user ID in state
-        setUser(true);
-        setUserEmail(email)
-
+        setUser({userId, username, email, userLoggedIn});
+        console.log("testststs")
         // Navigate to the home page
         navigate("/");
       }

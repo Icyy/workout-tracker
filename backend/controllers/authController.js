@@ -26,7 +26,7 @@ exports.loginUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    return res.json({ userId: user._id, email: user.email, userLoggedIn: true });
+    return res.json({ userId: user._id, username: user.username ,email: user.email, userLoggedIn: true });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });

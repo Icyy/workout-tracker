@@ -2,27 +2,48 @@ import create from 'zustand';
 
 const useAuthStore = create((set) => ({
   userId: null,
-  user: false, // Change default value to null
-  token: null, // Add token field
-  setUser: (userData) => set({ user: userData }),
-  setEmail: (email) => set({ email }),
-  setUserId: (userId) => set({ userId }),
-  setToken: (token) => set({ token }), // Setter for token
-  clearUser: () => set({ user: null, email: null, userId: null, token: null }), // Clear all user data including token
-  loadUser: () => {
+  username: null,
+  email: null,
+  userLoggedIn: false,
+  expiryDate: null,
+
+  setUser: (userData) => {
+    set({
+      userId: userData.userId,
+      username: userData.username,
+      email: userData.email,
+      userLoggedIn: userData.userLoggedIn,
+      expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+    });
+  },
+
+  clearUser: () => {
+    set({
+      userId: null,
+      username: null,
+      email: null,
+      userLoggedIn: false,
+      expiryDate: null,
+    });
+  },
+
+  loadUser: ()=>{
+    const storedData = localStorage.getItem('userData')
     try {
-      const storedUser = localStorage.getItem('userId');
-      if (storedUser) {
-        set({ userId: JSON.parse(storedUser) });
-      }
-      const storedToken = localStorage.getItem('token'); // Load token from localStorage
-      if (storedToken) {
-        set({ token: storedToken });
+      if(storedData){
+        set({
+          userId: storedData.userId,
+          username: storedData.username,
+          email: storedData.email,
+          userLoggedIn: storedData.userLoggedIn,
+          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        });
       }
     } catch (error) {
-      console.error('Error loading user:', error);
+      console.log("no data stored")
+      throw new Error("No Data Stored")
     }
-  },
+  }
 }));
 
 export default useAuthStore;

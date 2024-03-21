@@ -10,13 +10,16 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import useAuthStore from "@/stores/authStore";
 
 
 const NavBar = ({user}) => {  
   const location = useLocation();
+  
+
+  
 
   const renderRightButton = () => {
     if (location.pathname === "/login") {
@@ -73,12 +76,19 @@ const NavBar = ({user}) => {
 
 export default NavBar;
 
-function handleLogout(){
-  useAuthStore.getState().clearUser();
-  localStorage.removeItem('userData');
-}
+
 
 function UserNav() {
+
+
+  const navigate = useNavigate();
+
+  const handleLogout = ()=>{
+    useAuthStore.getState().clearUser();
+    localStorage.removeItem('userData');
+    navigate("/login")
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
